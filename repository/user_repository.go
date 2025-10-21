@@ -1,0 +1,8 @@
+package repository
+
+
+
+type UserRepositoryInterface(
+
+);
+

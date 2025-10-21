@@ -3,36 +3,48 @@ package config
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	DBHost     string
-	DBPort     int
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
+	Env         string
+	AppLogLevel string
+	DBHost      string
+	DBPort      int
+	DBUser      string
+	DBPassword  string
+	DBName      string
+	DBSSLMode   string
 }
 
 func LoadEnv() {
-	err := godotenv.Load()
+	var err error
+	if os.Getenv("ENV") == "test" {
+		envFile := filepath.Join("..", ".env.test")
+		err = godotenv.Load(envFile)
+	} else {
+		err = godotenv.Load()
+	}
+
 	if err != nil {
-		log.Fatal("No .env file found")
+		log.Fatal("Error loading .env file")
 	}
 }
 
 func LoadConfig() *Config {
 
 	return &Config{
-		DBHost:     Getenv("ENV", "localhost"),
-		DBPort:     GetenvAsInt("DB_PORT", 5432),
-		DBUser:     Getenv("DB_USER", ""),
-		DBPassword: Getenv("DB_PASSWORD", ""),
-		DBName:     Getenv("DB_NAME", "shopping"),
-		DBSSLMode:  Getenv("DB_SSLMODE", "disable"),
+		AppLogLevel: Getenv("APP_LOG_LEVEL", "INFO"),
+		Env:         Getenv("ENV", "development"),
+		DBHost:      Getenv("DB_HOST", "localhost"),
+		DBPort:      GetenvAsInt("DB_PORT", 5432),
+		DBUser:      Getenv("DB_USER", "postgres"),
+		DBPassword:  Getenv("DB_PASSWORD", ""),
+		DBName:      Getenv("DB_NAME", "shopping_website"),
+		DBSSLMode:   Getenv("DB_SSLMODE", "disable"),
 	}
 
 }
