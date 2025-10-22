@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"e-commerce-platform-backend/config"
 	"e-commerce-platform-backend/data"
 	"fmt"
 	"os"
@@ -25,10 +26,13 @@ var mkdirAll = os.MkdirAll
 var getEnv = os.Getenv
 var newTicker = time.NewTicker
 
-func init() {
-	if os.Getenv("ENV") == "test" || os.Getenv("ENV") == "" {
+func Init() {
+	if config.LoadConfig().Env == "test" ||
+		config.LoadConfig().Env == "" ||
+		os.Getenv("ENV") == "test" ||
+		os.Getenv("ENV") == "" {
 		appLog = zap.NewNop()
-		actLog = zap.NewNop()
+		appLog = zap.NewNop()
 		return
 	}
 	initLogger()
@@ -38,6 +42,8 @@ func init() {
 func initLogger() {
 	logMutex.Lock()
 	defer logMutex.Unlock()
+
+	fmt.Print("----------------------------------------------------------------------------------->")
 
 	currDate = time.Now().Format(data.DATE_FORMAT_YYYYMMDD)
 	appLogPath := getAppLogFilePath()

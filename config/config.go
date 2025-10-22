@@ -10,14 +10,16 @@ import (
 )
 
 type Config struct {
-	Env         string
-	AppLogLevel string
-	DBHost      string
-	DBPort      int
-	DBUser      string
-	DBPassword  string
-	DBName      string
-	DBSSLMode   string
+	Env            string
+	Port           int
+	AppLogLevel    string
+	AllowedOrigins string
+	DBHost         string
+	DBPort         int
+	DBUser         string
+	DBPassword     string
+	DBName         string
+	DBSSLMode      string
 }
 
 func LoadEnv() {
@@ -37,14 +39,16 @@ func LoadEnv() {
 func LoadConfig() *Config {
 
 	return &Config{
-		AppLogLevel: Getenv("APP_LOG_LEVEL", "INFO"),
-		Env:         Getenv("ENV", "development"),
-		DBHost:      Getenv("DB_HOST", "localhost"),
-		DBPort:      GetenvAsInt("DB_PORT", 5432),
-		DBUser:      Getenv("DB_USER", "postgres"),
-		DBPassword:  Getenv("DB_PASSWORD", ""),
-		DBName:      Getenv("DB_NAME", "shopping_website"),
-		DBSSLMode:   Getenv("DB_SSLMODE", "disable"),
+		Env:            Getenv("ENV", "development"),
+		Port:           GetenvAsInt("PORT", 9002),
+		AppLogLevel:    Getenv("APP_LOG_LEVEL", "INFO"),
+		AllowedOrigins: Getenv("ALLOWED_ORIGINS", ""),
+		DBHost:         Getenv("DB_HOST", "localhost"),
+		DBPort:         GetenvAsInt("DB_PORT", 5432),
+		DBUser:         Getenv("DB_USER", "postgres"),
+		DBPassword:     Getenv("DB_PASSWORD", ""),
+		DBName:         Getenv("DB_NAME", "shopping_website"),
+		DBSSLMode:      Getenv("DB_SSLMODE", "disable"),
 	}
 
 }

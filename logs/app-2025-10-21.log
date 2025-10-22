@@ -1,0 +1,6 @@
+2025-10-21T17:15:09+05:30	INFO	e-commerce-platform-backend/main.go:32	Starting the backend service
+2025-10-21T17:15:09+05:30	INFO	e-commerce-platform-backend/main.go:34	Loading configuration...
+2025-10-21T17:15:09+05:30	INFO	e-commerce-platform-backend/main.go:44	Loading database configurations
+2025-10-21T17:15:09+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-10-21T17:15:09+05:30	INFO	migration/migration.go:13	Database Migration
+2025-10-21T17:15:10+05:30	INFO	e-commerce-platform-backend/main.go:69	Server started on port 9002
