@@ -10,3 +10,16 @@ type Cart struct {
 	User    User    `gorm:"foreignKey:UserID" json:"user"`
 	Product Product `gorm:"foreignKey:ProductID" json:"product"`
 }
+
+type CartItem struct {
+	ID           uint    `json:"id"`
+	CartID       uint    `gorm:"not null"`
+	ProductID    uint    `json:"product_id"`
+	ProductName  string  `json:"product_name"`
+	ProductPrice float64 `json:"product_price"`
+	Quantity     int     `json:"quantity"`
+	IsSelected   bool    `json:"is_selected"`
+
+	//Foreign Key to Cart ID
+	Cart Cart `gorm:"foreignKey:CartID" json:"cart"`
+}
