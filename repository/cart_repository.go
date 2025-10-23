@@ -44,5 +44,3 @@ func (r *CartRepositoryImpl) GetUserCart(userId uint) (*model.Cart, error) {
 func (r *CartRepositoryImpl) RemoveItemFromCart(itemId uint) error {
 	return r.Db.Delete(&model.CartItem{}, itemId).Error
 }
-
-func 
