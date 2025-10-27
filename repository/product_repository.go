@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"e-commerce-platform-backend/logger"
 	"e-commerce-platform-backend/model"
 
 	"gorm.io/gorm"
@@ -26,7 +25,6 @@ func (r ProductRepositoryImpl) CreateProduct(product *model.Product) error {
 }
 
 func (r ProductRepositoryImpl) GetAllProducts() ([]model.Product, error) {
-	logger.ActInfo("Fetching all the products")
 	var products []model.Product
 	err := r.Db.Preload("Products").Find(&products).Error
 	return products, err
