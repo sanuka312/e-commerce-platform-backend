@@ -11,6 +11,7 @@ type CartRepository interface {
 	AddItemToCart(item *model.CartItem) error
 	GetUserCart(userId uint) (*model.Cart, error)
 	RemoveItemFromCart(itemId uint) error
+	ClearCart(userId uint) error
 }
 
 type CartRepositoryImpl struct {
