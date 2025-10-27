@@ -8,7 +8,8 @@ import (
 )
 
 type CartRepository interface {
-	AddToCart(item *model.CartItem) error
+	AddItemToCart(item *model.CartItem) error
+	GetUserCart(userId uint) (*model.Cart, error)
 	RemoveItemFromCart(itemId uint) error
 }
 
@@ -20,7 +21,7 @@ func NewCartRepository(Db *gorm.DB) CartRepository {
 	return &CartRepositoryImpl{Db: Db}
 }
 
-func (r *CartRepositoryImpl) AddToCart(item *model.CartItem) error {
+func (r *CartRepositoryImpl) AddItemToCart(item *model.CartItem) error {
 	logger.ActInfo("Adding new items to cart")
 	return r.Db.Create(item).Error
 }
@@ -43,4 +44,13 @@ func (r *CartRepositoryImpl) GetUserCart(userId uint) (*model.Cart, error) {
 
 func (r *CartRepositoryImpl) RemoveItemFromCart(itemId uint) error {
 	return r.Db.Delete(&model.CartItem{}, itemId).Error
+}
+
+func (r *CartRepositoryImpl) ClearCart(userId uint) error {
+	var cart model.Cart
+	if err := r.Db.Where("user_id=?", userId).First(&cart).Error; err != nil {
+		return err
+	}
+
+	return r.Db.Where("cart_id=?", cart.CartID).Delete(&model.CartItem{}).Error
 }
