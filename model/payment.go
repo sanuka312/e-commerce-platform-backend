@@ -9,6 +9,5 @@ type Payment struct {
 	Status        string  `gorm:"size:50;not null;default:'pending'" json:"status"`
 
 	//Relationships
-	Order Order `gorm:"foreignKey:OrderId" json:"order"`
-	User  User  `gorm:"foreignKey:UserId;references:KeyCloakUserId" json:"user"`
+	User User `gorm:"foreignKey:UserId;references:KeyCloakUserId" json:"user"`
 }
