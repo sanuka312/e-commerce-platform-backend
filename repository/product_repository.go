@@ -10,6 +10,8 @@ type ProductRepository interface {
 	CreateProduct(product *model.Product) error
 	GetAllProducts() ([]model.Product, error)
 	GetProductById(productId uint) (*model.Product, error)
+	UpdateProduct(product *model.Product) error
+	DeleteProduct(productID uint) error
 }
 
 type ProductRepositoryImpl struct {

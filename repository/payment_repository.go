@@ -7,6 +7,7 @@ import (
 )
 
 type PaymentRepository interface {
+	CreatePayment(payment *model.Payment) error
 	GetPaymentByOrder(orderId uint) (*model.Payment, error)
 	UpdatePaymentStatus(orderId uint, status string) error
 }

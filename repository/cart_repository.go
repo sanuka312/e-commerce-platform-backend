@@ -9,9 +9,9 @@ import (
 
 type CartRepository interface {
 	AddItemToCart(item *model.CartItem) error
-	GetUserCart(userId uint) (*model.Cart, error)
+	GetUserCart(userId string) (*model.Cart, error)
 	RemoveItemFromCart(itemId uint) error
-	ClearCart(userId uint) error
+	ClearCart(userId string) error
 }
 
 type CartRepositoryImpl struct {
@@ -27,8 +27,7 @@ func (r *CartRepositoryImpl) AddItemToCart(item *model.CartItem) error {
 	return r.Db.Create(item).Error
 }
 
-func (r *CartRepositoryImpl) GetUserCart(userId uint) (*model.Cart, error) {
-	logger.ActInfo("Getting user cart")
+func (r *CartRepositoryImpl) GetUserCart(userId string) (*model.Cart, error) {
 	var cart model.Cart
 	query := r.Db.Model(&model.Cart{}).
 		Preload("Items.Product").
@@ -47,7 +46,7 @@ func (r *CartRepositoryImpl) RemoveItemFromCart(itemId uint) error {
 	return r.Db.Delete(&model.CartItem{}, itemId).Error
 }
 
-func (r *CartRepositoryImpl) ClearCart(userId uint) error {
+func (r *CartRepositoryImpl) ClearCart(userId string) error {
 	var cart model.Cart
 	if err := r.Db.Where("user_id=?", userId).First(&cart).Error; err != nil {
 		return err

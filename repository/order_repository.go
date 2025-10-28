@@ -7,7 +7,9 @@ import (
 )
 
 type OrderRepository interface {
+	CreateOrder(order *model.Order) error
 	GetOrderById(orderId uint) (*model.Order, error)
+	GetOrderByUserId(UserId string) ([]model.Order, error)
 	UpdateOrderStatus(orderId uint, OrderStatus string) error
 }
 
@@ -17,6 +19,20 @@ type OrderRepositoryImpl struct {
 
 func NewOrderRepository(Db *gorm.DB) OrderRepository {
 	return &OrderRepositoryImpl{Db: Db}
+}
+
+func (r OrderRepositoryImpl) CreateOrder(order *model.Order) error {
+	return r.Db.Create(order).Error
+}
+
+func (r OrderRepositoryImpl) GetOrderByUserId(UserId string) ([]model.Order, error) {
+	var orders []model.Order
+	err := r.Db.
+		Preload("Items.Product").
+		Preload("Payment").
+		Where("user_id=?", UserId).
+		Find(&orders).Error
+	return orders, err
 }
 
 func (r OrderRepositoryImpl) GetOrderById(orderId uint) (*model.Order, error) {
