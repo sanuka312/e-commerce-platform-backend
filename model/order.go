@@ -1,15 +1,25 @@
 package model
 
+import "time"
+
 type Order struct {
-	OrderId     uint   `gorm:"PrimaryKey" json:"order_id"`
-	UserId      uint   `gorm:"not null" json:"user_id"`
-	ProductId   uint   `gorm:"not null"`
-	Quantity    uint   `gorm:"not null" json:"qty"`
-	AddressId   *uint  `json:"address_id"`
-	OrderStatus string `gorm:"size:50;default:'pending'" json:"order_status"`
+	OrderId   uint   `gorm:"PrimaryKey" json:"order_id"`
+	UserId    string `gorm:"not null" json:"user_id"`
+	ProductId uint   `gorm:"not null"`
+	PaymentId uint   `gorm:"not null"`
+
+	ProductPrice float64 `json:"product_price"`
+	Quantity     uint    `gorm:"not null" json:"qty"`
+
+	TotalPrice  float64   `json:"total_price"`
+	AddressId   *uint     `json:"address_id"`
+	OrderStatus string    `gorm:"size:50;default:'pending'" json:"order_status"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 
 	//Relationships
 	Product Product  `gorm:"foreignKey:ProductId" json:"product"`
 	Address *Address `gorm:"foreignKey:AddressId" json:"address"`
-	User    *User    `gorm:"foreignKey:UserId"`
+	User    User     `gorm:"foreignKey:UserId;references:KeyCloakUserId" json:"user"`
+	Payment Payment  `gorm:"foreignKey:PaymentId" json:"payment"`
+	Price   Product  `gorm:"foreignKey:ProductPrice" json:"price"`
 }
