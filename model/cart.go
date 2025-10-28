@@ -5,6 +5,8 @@ type Cart struct {
 	UserID string `gorm:"type:uuid;not null" json:"user_id"`
 
 	User User `gorm:"foreignKey:UserID;references:KeyCloakUserId" json:"user"`
+
+	Items []CartItem `gorm:"foreignKey" json:"cart_items"`
 }
 
 type CartItem struct {
@@ -18,5 +20,6 @@ type CartItem struct {
 	IsSelected  bool    `json:"is_selected"`
 
 	//Foreign Key to Cart ID
-	Cart Cart `gorm:"foreignKey:CartID" json:"cart"`
+	Cart    Cart    `gorm:"foreignKey:CartID" json:"cart"`
+	Product Product `gorm:"foreignKey:ProductId" json:"product"`
 }
