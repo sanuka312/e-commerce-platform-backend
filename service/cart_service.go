@@ -9,6 +9,7 @@ import (
 type CartService interface {
 	GetUserCart(userId uint) (*model.Cart, error)
 	AddTOCart(userID uint, cartID uint, productID uint, quantity int) error
+	ClearCart(userId uint) error
 }
 
 type CartServiceImpl struct {
