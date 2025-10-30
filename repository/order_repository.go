@@ -9,7 +9,7 @@ import (
 type OrderRepository interface {
 	CreateOrder(order *model.Order) error
 	GetOrderById(orderId uint) (*model.Order, error)
-	GetOrderByUserId(UserId string) ([]model.Order, error)
+	GetOrderByUserId(UserId uint) ([]model.Order, error)
 	UpdateOrderStatus(orderId uint, OrderStatus string) error
 }
 
@@ -25,7 +25,7 @@ func (r OrderRepositoryImpl) CreateOrder(order *model.Order) error {
 	return r.Db.Create(order).Error
 }
 
-func (r OrderRepositoryImpl) GetOrderByUserId(UserId string) ([]model.Order, error) {
+func (r OrderRepositoryImpl) GetOrderByUserId(UserId uint) ([]model.Order, error) {
 	var orders []model.Order
 	err := r.Db.
 		Preload("Items.Product").

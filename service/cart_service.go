@@ -7,6 +7,7 @@ import (
 )
 
 type CartService interface {
+	GetUserCart(userId uint) (*model.Cart, error)
 	AddTOCart(userID uint, cartID uint, productID uint, quantity int) error
 }
 
@@ -22,7 +23,7 @@ func NewDatasetServiceImpl(CartRepository repository.CartRepository, ProductRepo
 	}, err
 }
 
-func (s *CartServiceImpl) GetUserCart(userId string) (*model.Cart, error) {
+func (s *CartServiceImpl) GetUserCart(userId uint) (*model.Cart, error) {
 	return s.CartRepository.GetUserCart(userId)
 }
 
@@ -61,6 +62,6 @@ func (s *CartServiceImpl) AddTOCart(userID uint, cartID uint, productID uint, qu
 	return nil
 }
 
-func (s *CartServiceImpl) ClearCart(userId string) error {
+func (s *CartServiceImpl) ClearCart(userId uint) error {
 	return s.CartRepository.ClearCart(userId)
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type OrderService interface {
-	CreateOrder(userId string) (*model.Order, error)
+	CreateOrder(userId uint) (*model.Order, error)
 }
 
 type OrderServiceImpl struct {
@@ -28,7 +28,7 @@ func NewOrderServiceImpl(OrderRepository repository.OrderRepository, ProductRepo
 	}, err
 }
 
-func (s *OrderServiceImpl) CreateOrder(userId string) (*model.Order, error) {
+func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
 	cart, err := s.CartRepository.GetUserCart(userId)
 	if err != nil || cart == nil {
 		logger.ActError("Cart not found")
@@ -86,6 +86,6 @@ func (s *OrderServiceImpl) CreateOrder(userId string) (*model.Order, error) {
 	return order, nil
 }
 
-func (s *OrderServiceImpl) GetOrderByUser(userId string) ([]model.Order, error) {
+func (s *OrderServiceImpl) GetOrderByUser(userId uint) ([]model.Order, error) {
 	return s.OrderRepository.GetOrderByUserId(userId)
 }
