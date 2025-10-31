@@ -1,7 +1,11 @@
 package model
 
+import "time"
+
 type User struct {
-	UserId    uint   `gorm:"size:100;not null" json:"keycloak_user_id"`
-	FullName  string `gorm:"size:250;not null" json:"full_name"`
-	UserEmail string `gorm:"size:200;not null" json:"user_email"`
+	UserId       uint       `gorm:"size:100;not null" json:"user_id"`
+	RefreshToken string     `gorm:"type:text"`
+	TokenExpiry  *time.Time `gorm:"index"`
+	CreatedAt    time.Time  `gorm:"autoCreateTime"`
+	UpdatedAt    time.Time  `gorm:"autoUpdateTime"`
 }
