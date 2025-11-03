@@ -2,9 +2,13 @@ package main
 
 import (
 	"e-commerce-platform-backend/config"
+	"e-commerce-platform-backend/controller"
 	"e-commerce-platform-backend/database"
 	"e-commerce-platform-backend/logger"
 	"e-commerce-platform-backend/migration"
+	"e-commerce-platform-backend/repository"
+	"e-commerce-platform-backend/router"
+	"e-commerce-platform-backend/service"
 	"net/http"
 	"os"
 	"strconv"
@@ -49,6 +53,30 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	//Initializing the repository files
+	cartRepository := repository.NewCartRepository(pgDb)
+	productRepository := repository.NewProductRepository(pgDb)
+
+	cartService, err := service.NewCartServiceImpl(cartRepository, productRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the cart service", zap.Error(err))
+		return
+	}
+
+	productService, err := service.NewProductServiceImpl(productRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the product service")
+		return
+	}
+
+	//Initializing the controllers
+	cartController := controller.NewCartController(cartService)
+	productController := controller.NewProductController(productService)
+
+	//Register routes
+	router.RegisterCartRoutes(r, cartController)
+	router.RegisterProductRoutes(r, productController)
 
 	// Enable CORS for all origins
 	corsHandler := cors.New(cors.Options{

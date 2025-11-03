@@ -17,7 +17,7 @@ type CartServiceImpl struct {
 	ProductRepository repository.ProductRepository
 }
 
-func NewDatasetServiceImpl(CartRepository repository.CartRepository, ProductRepository repository.ProductRepository) (service CartService, err error) {
+func NewCartServiceImpl(CartRepository repository.CartRepository, ProductRepository repository.ProductRepository) (service CartService, err error) {
 	return &CartServiceImpl{
 		CartRepository:    CartRepository,
 		ProductRepository: ProductRepository,
