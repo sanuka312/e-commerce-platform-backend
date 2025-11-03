@@ -56,3 +56,8 @@ type IntrospectResponse struct {
 	TokenType         string        `json:"token_type"`
 	Active            bool          `json:"active"`
 }
+
+// Payment Request Struct
+type PaymentRequest struct {
+	PaymentMethod string `json:"payment_method"`
+}
