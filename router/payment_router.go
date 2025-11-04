@@ -14,6 +14,6 @@ func RegisterPaymentRoutes(router *gin.Engine, controller PaymentControlInterfac
 		paymentGroup.GET("/order/:orderId", controller.GetPaymentByOrderId)
 
 		//Processing the payment for an order
-		paymentGroup.POST("/order/:orderId/process")
+		paymentGroup.POST("/order/:orderId/process", controller.ProcessPayment)
 	}
 }
