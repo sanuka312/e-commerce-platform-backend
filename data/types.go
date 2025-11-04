@@ -58,6 +58,6 @@ type IntrospectResponse struct {
 }
 
 // Payment Request Struct
-type PaymentRequest struct {
+type ProcessPaymentRequest struct {
 	PaymentMethod string `json:"payment_method"`
 }
