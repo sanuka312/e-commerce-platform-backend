@@ -20,6 +20,7 @@ type contextKey string
 
 const RolesContextKey = contextKey("roles")
 const UserNameContextKey = contextKey("user_name")
+const ClaimsContextKey = contextKey("claims")
 
 // AuthMiddleware is a middleware that checks the JWT token in the Authorization header
 func AuthMiddleware() gin.HandlerFunc {
@@ -40,7 +41,11 @@ func AuthMiddleware() gin.HandlerFunc {
 		result, err := introspectToken(tokenString)
 		if err != nil {
 			logger.ActError("Token Introspect Error", zap.String("endpoint", c.Request.URL.Path), zap.Error(err))
-			panic(err)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, data.ErrorResponse{
+				Error:            "introspect_error",
+				ErrorDescription: "Failed to validate token",
+			})
+			return
 		}
 
 		// Check result of token introspect
@@ -52,12 +57,46 @@ func AuthMiddleware() gin.HandlerFunc {
 			})
 			return
 		}
-		// Store roles in Gin context
+		// Store claims, roles, and username in Gin context
+		c.Set((string(ClaimsContextKey)), &result)
 		c.Set((string(RolesContextKey)), GetResourceRoles(result.ResourceAccess))
 
 		c.Set((string(UserNameContextKey)), result.PreferredUsername)
 
 		// Continue to the next checkpoint
+		c.Next()
+	}
+}
+
+// OptionalAuthMiddleware allows requests without Authorization header to proceed as guest.
+// If a valid token is provided, user context is populated; otherwise roles/username are empty.
+func OptionalAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if len(authHeader) < 7 || authHeader[:7] != "Bearer " {
+			// Proceed as guest
+			c.Set((string(RolesContextKey)), []string{})
+			c.Set((string(UserNameContextKey)), "")
+			c.Next()
+			return
+		}
+
+		tokenString := authHeader[7:]
+
+		result, err := introspectToken(tokenString)
+		if err != nil || !result.Active {
+			// Treat as guest on error or inactive token
+			c.Set((string(RolesContextKey)), []string{})
+			c.Set((string(UserNameContextKey)), "")
+			c.Next()
+			return
+		}
+
+		// Populate authenticated context
+		c.Set((string(ClaimsContextKey)), &result)
+		c.Set((string(RolesContextKey)), GetResourceRoles(result.ResourceAccess))
+		c.Set((string(UserNameContextKey)), result.PreferredUsername)
+
 		c.Next()
 	}
 }
