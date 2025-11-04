@@ -57,6 +57,8 @@ func main() {
 	//Initializing the repository files
 	cartRepository := repository.NewCartRepository(pgDb)
 	productRepository := repository.NewProductRepository(pgDb)
+	orderRepository := repository.NewOrderRepository(pgDb)
+	paymentRepository := repository.NewPaymentRepositoryImpl(pgDb)
 
 	cartService, err := service.NewCartServiceImpl(cartRepository, productRepository)
 	if err != nil {
@@ -70,13 +72,29 @@ func main() {
 		return
 	}
 
+	orderService, err := service.NewOrderServiceImpl(orderRepository, productRepository, cartRepository, paymentRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the order service", zap.Error(err))
+		return
+	}
+
+	paymentService, err := service.NewPaymentServiceImpl(paymentRepository, orderRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the payment service", zap.Error(err))
+		return
+	}
+
 	//Initializing the controllers
 	cartController := controller.NewCartController(cartService)
 	productController := controller.NewProductController(productService)
+	orderController := controller.NewOrderController(orderService)
+	paymentController := controller.NewPaymentController(paymentService)
 
 	//Register routes
 	router.RegisterCartRoutes(r, cartController)
 	router.RegisterProductRoutes(r, productController)
+	router.RegisterOrderRoutes(r, orderController)
+	router.RegisterPaymentRoutes(r, paymentController)
 
 	// Enable CORS for all origins
 	corsHandler := cors.New(cors.Options{
