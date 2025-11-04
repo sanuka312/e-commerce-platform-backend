@@ -34,3 +34,22 @@ func CheckRole(roles []string, role string) bool {
 
 	return false
 }
+
+func GetRolesFromContext(c *gin.Context) []string {
+	if roles, exists := c.Get("roles"); exists {
+		return roles.([]string)
+	}
+	return nil
+}
+
+func GetUserNameFromContext(c *gin.Context) string {
+	if username, exists := c.Get("user_name"); exists {
+		return username.(string)
+	}
+	return ""
+}
+
+func IsAuthenticated(c *gin.Context) bool {
+	claims := GetClaims(c)
+	return claims != nil && claims.Active
+}
