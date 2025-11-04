@@ -35,9 +35,10 @@ func (r OrderRepositoryImpl) GetOrderByUserId(UserId uint) ([]model.Order, error
 	return orders, err
 }
 
+// Getting order with the payment and products
 func (r OrderRepositoryImpl) GetOrderById(orderId uint) (*model.Order, error) {
 	var order model.Order
-	err := r.Db.Preload("Items.Products").Preload("Payment").First(&order, orderId).Error
+	err := r.Db.Preload("Items.Product").Preload("Payment").First(&order, orderId).Error
 	return &order, err
 }
 
