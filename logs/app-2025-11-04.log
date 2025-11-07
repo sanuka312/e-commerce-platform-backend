@@ -1,0 +1,14 @@
+2025-11-04T14:41:11+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-04T14:41:11+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-04T14:41:11+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-04T14:41:13+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-04T14:41:13+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-04T14:41:13+05:30	ERROR	e-commerce-platform-backend/main.go:52	Migration failed	{"error": "ERROR: cannot cast type uuid to bigint (SQLSTATE 42846)"}
+2025-11-04T14:41:13+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-04T15:42:14+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-04T15:42:14+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-04T15:42:14+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-04T15:42:14+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-04T15:42:14+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-04T15:42:14+05:30	ERROR	e-commerce-platform-backend/main.go:52	Migration failed	{"error": "ERROR: cannot cast type uuid to bigint (SQLSTATE 42846)"}
+2025-11-04T15:42:14+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002

@@ -1,0 +1,81 @@
+2025-11-06T00:19:13+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T00:19:13+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T00:19:13+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T00:19:13+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T00:19:13+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T00:19:13+05:30	ERROR	e-commerce-platform-backend/main.go:52	Migration failed	{"error": "ERROR: cannot cast type uuid to bigint (SQLSTATE 42846)"}
+2025-11-06T00:19:13+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T00:26:40+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T00:26:40+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T00:26:40+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T00:26:40+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T00:26:40+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T00:26:40+05:30	ERROR	e-commerce-platform-backend/main.go:52	Migration failed	{"error": "ERROR: cannot cast type uuid to bigint (SQLSTATE 42846)"}
+2025-11-06T00:26:40+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T00:34:20+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T00:34:20+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T00:34:20+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T00:34:20+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T00:34:20+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T00:34:21+05:30	ERROR	e-commerce-platform-backend/main.go:52	Migration failed	{"error": "ERROR: cannot cast type uuid to bigint (SQLSTATE 42846)"}
+2025-11-06T00:34:21+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T11:19:49+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T11:19:49+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T11:19:49+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T11:19:49+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T11:19:49+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T11:19:49+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T11:26:54+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T11:26:54+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T11:26:54+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T11:26:54+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T11:26:54+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T11:26:54+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T11:53:33+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T11:53:33+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T11:53:33+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T11:53:33+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T11:53:33+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T11:53:34+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T13:07:08+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T13:07:08+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T13:07:08+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T13:07:08+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T13:07:08+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T13:07:08+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T13:29:50+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T13:29:50+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T13:29:50+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T13:29:51+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T13:29:51+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T13:29:51+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T16:14:21+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T16:14:21+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T16:14:21+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T16:14:21+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T16:14:21+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T16:14:21+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T17:09:36+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T17:09:36+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T17:09:36+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T17:09:36+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T17:09:36+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T17:09:36+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T17:14:59+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T17:14:59+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T17:14:59+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T17:15:00+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T17:15:00+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T17:15:00+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T17:16:56+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T17:16:56+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T17:16:56+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T17:16:56+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T17:16:56+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T17:16:56+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
+2025-11-06T17:55:19+05:30	INFO	e-commerce-platform-backend/main.go:36	Starting the backend service
+2025-11-06T17:55:19+05:30	INFO	e-commerce-platform-backend/main.go:38	Loading configuration...
+2025-11-06T17:55:19+05:30	INFO	e-commerce-platform-backend/main.go:48	Loading database configurations
+2025-11-06T17:55:19+05:30	INFO	database/db.go:44	connected to PostgreSQL database successfully
+2025-11-06T17:55:19+05:30	INFO	migration/migration.go:13	Database Migration
+2025-11-06T17:55:20+05:30	INFO	e-commerce-platform-backend/main.go:115	Server started on port 9002
