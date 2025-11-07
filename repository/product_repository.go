@@ -28,7 +28,7 @@ func (r ProductRepositoryImpl) CreateProduct(product *model.Product) error {
 
 func (r ProductRepositoryImpl) GetAllProducts() ([]model.Product, error) {
 	var products []model.Product
-	err := r.Db.Preload("Products").Find(&products).Error
+	err := r.Db.Preload("ProductImages").Find(&products).Error
 	return products, err
 }
 
