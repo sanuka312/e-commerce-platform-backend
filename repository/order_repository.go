@@ -28,7 +28,7 @@ func (r OrderRepositoryImpl) CreateOrder(order *model.Order) error {
 func (r OrderRepositoryImpl) GetOrderByUserId(UserId uint) ([]model.Order, error) {
 	var orders []model.Order
 	err := r.Db.
-		Preload("Items.Product").
+		Preload("Product").
 		Preload("Payment").
 		Where("user_id=?", UserId).
 		Find(&orders).Error
@@ -38,7 +38,7 @@ func (r OrderRepositoryImpl) GetOrderByUserId(UserId uint) ([]model.Order, error
 // Getting order with the payment and products
 func (r OrderRepositoryImpl) GetOrderById(orderId uint) (*model.Order, error) {
 	var order model.Order
-	err := r.Db.Preload("Items.Product").Preload("Payment").First(&order, orderId).Error
+	err := r.Db.Preload("Product").Preload("Payment").First(&order, orderId).Error
 	return &order, err
 }
 
