@@ -1,6 +1,10 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"e-commerce-platform-backend/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 type PaymentControlInterface interface {
 	GetPaymentByOrderId(ctx *gin.Context)
@@ -8,7 +12,8 @@ type PaymentControlInterface interface {
 }
 
 func RegisterPaymentRoutes(router *gin.Engine, controller PaymentControlInterface) {
-	paymentGroup := router.Group("/payments")
+	authMiddleware := auth.AuthMiddleware()
+	paymentGroup := router.Group("/payments", authMiddleware)
 	{
 		//get payment details for an order
 		paymentGroup.GET("/order/:orderId", controller.GetPaymentByOrderId)

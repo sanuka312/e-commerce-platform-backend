@@ -1,6 +1,10 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"e-commerce-platform-backend/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 type OrderControllerInterface interface {
 	CreateOrder(ctx *gin.Context)
@@ -9,7 +13,8 @@ type OrderControllerInterface interface {
 
 // registering order route nested with payment route
 func RegisterOrderRoutes(router *gin.Engine, controller OrderControllerInterface) {
-	orderGroup := router.Group("/orders")
+	authMiddleware := auth.AuthMiddleware()
+	orderGroup := router.Group("/orders", authMiddleware)
 	{
 		//Creates a new order for a user
 		orderGroup.POST("/:user_id", controller.CreateOrder)

@@ -13,10 +13,11 @@ type CartControllerInterface interface {
 }
 
 func RegisterCartRoutes(router *gin.Engine, controller CartControllerInterface) {
-	cartGroup := router.Group("/cart")
+	authMiddleware := auth.AuthMiddleware()
+	cartGroup := router.Group("/cart", authMiddleware)
 	{
 		cartGroup.GET("/:userId", controller.GetUserCart)
-		cartGroup.POST("/item", auth.AuthMiddleware(), controller.AddItemToCart)
+		cartGroup.POST("/item", controller.AddItemToCart)
 		cartGroup.DELETE("/:userId/items", controller.ClearCart)
 	}
 }

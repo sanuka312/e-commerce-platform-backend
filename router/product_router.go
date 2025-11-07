@@ -1,6 +1,10 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"e-commerce-platform-backend/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 type ProductControllerInterface interface {
 	GetAllProducts(ctx *gin.Context)
@@ -8,9 +12,12 @@ type ProductControllerInterface interface {
 }
 
 func RegisterProductRoutes(router *gin.Engine, controller ProductControllerInterface) {
-	productGroup := router.Group("/products")
+	authMiddleware := auth.AuthMiddleware()
+	productGroup := router.Group("/products", authMiddleware)
 	{
+
 		productGroup.GET("/", controller.GetAllProducts)
+		//Route for getting product by ID
 		productGroup.GET("/:id", controller.GetProductById)
 	}
 }
