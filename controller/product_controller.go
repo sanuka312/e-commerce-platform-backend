@@ -6,6 +6,7 @@ import (
 	"e-commerce-platform-backend/service"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,8 +38,19 @@ func (c *ProductController) GetAllProducts(ctx *gin.Context) {
 
 func (c *ProductController) GetProductById(ctx *gin.Context) {
 	logger.ActInfo("Fetching product by ID")
-	idParam := ctx.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
+    idParam := ctx.Param("id")
+    // Trim whitespace/newlines to avoid ParseUint errors from stray characters
+    trimmed := strings.TrimSpace(idParam)
+    if trimmed == "" {
+        ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+            Error:            "Bad Request",
+            ErrorDescription: "Invalid product ID ",
+            Details:          "id is empty",
+        })
+        return
+    }
+
+    id, err := strconv.ParseUint(trimmed, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
 			Error:            "Bad Request",
