@@ -1,12 +1,12 @@
 package model
 
 type Cart struct {
-	CartID uint   `gorm:"primaryKey" json:"cart_id"`
-	UserID string `gorm:"type:uuid;not null" json:"user_id"`
+	CartID uint `gorm:"primaryKey" json:"cart_id"`
+	UserID uint `gorm:"not null" json:"user_id"` // Internal numeric user_id
 
-	User User `gorm:"foreignKey:UserID;references:KeyCloakUserId" json:"user"`
-
-	Items []CartItem `gorm:"foreignKey" json:"cart_items"`
+	// Relationships
+	User  User       `gorm:"foreignKey:UserID;references:UserId" json:"user"`
+	Items []CartItem `gorm:"foreignKey:CartID" json:"cart_items"`
 }
 
 type CartItem struct {
@@ -21,5 +21,5 @@ type CartItem struct {
 
 	//Foreign Key to Cart ID
 	Cart    Cart    `gorm:"foreignKey:CartID" json:"cart"`
-	Product Product `gorm:"foreignKey:ProductId" json:"product"`
+	Product Product `gorm:"foreignKey:ProductID" json:"product"`
 }
