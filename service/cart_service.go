@@ -1,9 +1,9 @@
 package service
 
 import (
-	"e-commerce-platform-backend/logger"
-	"e-commerce-platform-backend/model"
-	"e-commerce-platform-backend/repository"
+	"shophub-backend/logger"
+	"shophub-backend/model"
+	"shophub-backend/repository"
 )
 
 type CartService interface {

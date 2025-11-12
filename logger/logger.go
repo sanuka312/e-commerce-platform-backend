@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"e-commerce-platform-backend/config"
-	"e-commerce-platform-backend/data"
+	"shophub-backend/config"
+	"shophub-backend/data"
 	"fmt"
 	"os"
 	"path/filepath"

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"e-commerce-platform-backend/auth"
+	"shophub-backend/auth"
 
 	"github.com/gin-gonic/gin"
 )

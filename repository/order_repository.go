@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"e-commerce-platform-backend/model"
+	"shophub-backend/model"
 
 	"gorm.io/gorm"
 )

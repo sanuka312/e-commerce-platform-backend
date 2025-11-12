@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"e-commerce-platform-backend/data"
+	"shophub-backend/data"
 
 	"github.com/gin-gonic/gin"
 )

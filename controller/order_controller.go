@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"e-commerce-platform-backend/data"
-	"e-commerce-platform-backend/logger"
-	"e-commerce-platform-backend/service"
+	"shophub-backend/data"
+	"shophub-backend/logger"
+	"shophub-backend/service"
 	"net/http"
 	"strconv"
 

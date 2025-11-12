@@ -1,8 +1,8 @@
 package database
 
 import (
-	"e-commerce-platform-backend/config"
-	"e-commerce-platform-backend/logger"
+	"shophub-backend/config"
+	"shophub-backend/logger"
 	"fmt"
 	"log"
 

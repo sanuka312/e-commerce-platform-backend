@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"e-commerce-platform-backend/model"
+	"shophub-backend/model"
 
 	"gorm.io/gorm"
 )
@@ -12,6 +12,7 @@ type ProductRepository interface {
 	GetProductById(productId uint) (*model.Product, error)
 	UpdateProduct(product *model.Product) error
 	DeleteProduct(productID uint) error
+	GetProductBySlug(productSlug string) (*model.Product, error)
 }
 
 type ProductRepositoryImpl struct {
@@ -46,4 +47,12 @@ func (r ProductRepositoryImpl) UpdateProduct(product *model.Product) error {
 
 func (r ProductRepositoryImpl) DeleteProduct(productID uint) error {
 	return r.Db.Delete(&model.Product{}, productID).Error
+}
+
+func (r ProductRepositoryImpl) GetProductBySlug(productSlug string) (*model.Product, error) {
+	var product model.Product
+	if err := r.Db.Preload("ProductImages").Where("product_slug= ?", productSlug).First(&product).Error; err != nil {
+		return nil, err
+	}
+	return &product, nil
 }

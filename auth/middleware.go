@@ -2,9 +2,9 @@ package auth
 
 import (
 	"bytes"
-	"e-commerce-platform-backend/config"
-	"e-commerce-platform-backend/data"
-	"e-commerce-platform-backend/logger"
+	"shophub-backend/config"
+	"shophub-backend/data"
+	"shophub-backend/logger"
 	"encoding/json"
 	"fmt"
 	"io"

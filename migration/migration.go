@@ -1,8 +1,8 @@
 package migration
 
 import (
-	"e-commerce-platform-backend/logger"
-	"e-commerce-platform-backend/model"
+	"shophub-backend/logger"
+	"shophub-backend/model"
 )
 
 type DBMigrator interface {

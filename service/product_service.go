@@ -1,8 +1,8 @@
 package service
 
 import (
-	"e-commerce-platform-backend/model"
-	"e-commerce-platform-backend/repository"
+	"shophub-backend/model"
+	"shophub-backend/repository"
 )
 
 type ProductService interface {
@@ -26,4 +26,8 @@ func (s *ProductServiceImpl) GetAllProducts() ([]model.Product, error) {
 
 func (s *ProductServiceImpl) GetProductById(productId uint) (*model.Product, error) {
 	return s.ProductRepository.GetProductById(productId)
+}
+
+func (s *ProductServiceImpl) GetProductBySlug(productSlug string) (*model.Product, error) {
+	return s.ProductRepository.GetProductBySlug(productSlug)
 }

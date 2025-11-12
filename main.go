@@ -1,14 +1,14 @@
 package main
 
 import (
-	"e-commerce-platform-backend/config"
-	"e-commerce-platform-backend/controller"
-	"e-commerce-platform-backend/database"
-	"e-commerce-platform-backend/logger"
-	"e-commerce-platform-backend/migration"
-	"e-commerce-platform-backend/repository"
-	"e-commerce-platform-backend/router"
-	"e-commerce-platform-backend/service"
+	"shophub-backend/config"
+	"shophub-backend/controller"
+	"shophub-backend/database"
+	"shophub-backend/logger"
+	"shophub-backend/migration"
+	"shophub-backend/repository"
+	"shophub-backend/router"
+	"shophub-backend/service"
 	"net/http"
 	"os"
 	"strconv"
