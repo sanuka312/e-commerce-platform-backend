@@ -8,6 +8,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"go.uber.org/zap"
 )
 
 var openDB = func(dsn string) (*gorm.DB, error) {
@@ -38,9 +39,10 @@ func InitDB() *gorm.DB {
 	db, err := openDB(sqlInfo)
 
 	if err != nil {
-		log.Fatal("Error connecting the database")
+		logger.AppError("Error connecting to the database", zap.Error(err))
+		log.Fatal("Failed to connect to database. Please check your database configuration and ensure PostgreSQL is running.")
 	}
 
-	logger.AppInfo("connected to PostgreSQL database successfully")
+	logger.AppInfo("Connected to PostgreSQL database successfully")
 	return db
 }
