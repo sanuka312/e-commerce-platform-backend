@@ -10,9 +10,9 @@ import (
 )
 
 type Config struct {
-	Env             string
-	Port            int
-	AppLogLevel     string
+	Env  string
+	Port int
+
 	AllowedOrigins  string
 	DBHost          string
 	DBPort          int
@@ -43,9 +43,9 @@ func LoadEnv() {
 func LoadConfig() *Config {
 
 	return &Config{
-		Env:             Getenv("ENV", "development"),
-		Port:            GetenvAsInt("PORT", 9002),
-		AppLogLevel:     Getenv("APP_LOG_LEVEL", "INFO"),
+		Env:  Getenv("ENV", "development"),
+		Port: GetenvAsInt("PORT", 9002),
+
 		AllowedOrigins:  Getenv("ALLOWED_ORIGINS", ""),
 		DBHost:          Getenv("DB_HOST", "localhost"),
 		DBPort:          GetenvAsInt("DB_PORT", 5432),
