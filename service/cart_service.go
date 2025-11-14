@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"shophub-backend/logger"
 	"shophub-backend/model"
 	"shophub-backend/repository"
@@ -10,6 +11,7 @@ type CartService interface {
 	GetUserCart(userId uint) (*model.Cart, error)
 	AddTOCart(userID uint, cartID uint, productID uint, quantity int) error
 	ClearCart(userId uint) error
+	RemoveItemFromCart(itemId uint) error
 }
 
 type CartServiceImpl struct {
@@ -34,10 +36,13 @@ func (s *CartServiceImpl) AddTOCart(userID uint, cartID uint, productID uint, qu
 
 	if err != nil {
 		logger.ActError("Product not found")
+		return fmt.Errorf("product not found")
+
 	}
 
 	if product.ProductStock < quantity {
 		logger.ActError("Not enough stock")
+		return fmt.Errorf("insufficient stock for the product")
 	}
 
 	//Calculate the total price of the product with the quantity
@@ -65,4 +70,9 @@ func (s *CartServiceImpl) AddTOCart(userID uint, cartID uint, productID uint, qu
 
 func (s *CartServiceImpl) ClearCart(userId uint) error {
 	return s.CartRepository.ClearCart(userId)
+}
+
+func (s *CartServiceImpl) RemoveItemFromCart(itemId uint) error {
+	return s.CartRepository.RemoveItemFromCart(itemId)
+
 }
