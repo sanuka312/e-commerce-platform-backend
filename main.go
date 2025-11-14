@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"os"
 	"shophub-backend/config"
 	"shophub-backend/controller"
 	"shophub-backend/database"
@@ -9,13 +11,13 @@ import (
 	"shophub-backend/repository"
 	"shophub-backend/router"
 	"shophub-backend/service"
-	"net/http"
-	"os"
+	"shophub-backend/utils"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/rs/cors"
 	"go.uber.org/zap"
 )
@@ -23,19 +25,16 @@ import (
 var allowedOrigins []string
 
 func main() {
-
 	defer logger.Sync()
-
-	if os.Getenv("ENV") != "production" {
-		config.LoadEnv()
-	}
 
 	logger.Init()
-	defer logger.Sync()
 
 	logger.AppInfo("Starting the backend service")
 
 	logger.AppInfo("Loading configuration...")
+	if os.Getenv("ENV") != "production" {
+		config.LoadEnv()
+	}
 
 	//Gin mode
 	if os.Getenv("ENV") == "production" {
@@ -52,8 +51,6 @@ func main() {
 		logger.AppError("Migration failed", zap.Error(err))
 	}
 
-	r := gin.Default()
-
 	//Initializing the repository files
 	cartRepository := repository.NewCartRepository(pgDb)
 	productRepository := repository.NewProductRepository(pgDb)
@@ -68,7 +65,7 @@ func main() {
 
 	productService, err := service.NewProductServiceImpl(productRepository)
 	if err != nil {
-		logger.ActError("Failed to initialize the product service")
+		logger.ActError("Failed to initialize the product service", zap.Error(err))
 		return
 	}
 
@@ -89,6 +86,12 @@ func main() {
 	productController := controller.NewProductController(productService)
 	orderController := controller.NewOrderController(orderService)
 	paymentController := controller.NewPaymentController(paymentService)
+
+	//Create gin router
+	r := gin.Default()
+
+	// Serve static files (images) from assets directory
+	r.Static("/assets", "./assets")
 
 	//Register routes
 	router.RegisterCartRoutes(r, cartController)
@@ -113,7 +116,8 @@ func main() {
 	}
 
 	logger.AppInfo("Server started on port " + strconv.Itoa(config.LoadConfig().Port))
-	server.ListenAndServe()
+	err = server.ListenAndServe()
+	utils.ErrorPanic(err)
 }
 
 func processAllowedOrigins() {
