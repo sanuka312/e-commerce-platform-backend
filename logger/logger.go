@@ -1,11 +1,11 @@
 package logger
 
 import (
-	"shophub-backend/config"
-	"shophub-backend/data"
 	"fmt"
 	"os"
 	"path/filepath"
+	"shophub-backend/config"
+	"shophub-backend/data"
 	"strings"
 	"sync"
 	"time"
@@ -15,8 +15,8 @@ import (
 )
 
 var (
-	appLog   *zap.Logger
-	actLog   *zap.Logger
+	appLog   = zap.NewNop()
+	actLog   = zap.NewNop()
 	logMutex sync.Mutex
 	currDate string
 )
@@ -32,7 +32,7 @@ func Init() {
 		os.Getenv("ENV") == "test" ||
 		os.Getenv("ENV") == "" {
 		appLog = zap.NewNop()
-		appLog = zap.NewNop()
+		actLog = zap.NewNop()
 		return
 	}
 	initLogger()
@@ -177,8 +177,12 @@ func AppError(msg string, fields ...zap.Field) {
 func Sync() {
 	logMutex.Lock()
 	defer logMutex.Unlock()
-	_ = actLog.Sync()
-	_ = appLog.Sync()
+	if actLog != nil {
+		_ = actLog.Sync()
+	}
+	if appLog != nil {
+		_ = appLog.Sync()
+	}
 }
 
 func getLogLevelFromEnv() zapcore.Level {
