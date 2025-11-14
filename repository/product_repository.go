@@ -29,13 +29,16 @@ func (r ProductRepositoryImpl) CreateProduct(product *model.Product) error {
 
 func (r ProductRepositoryImpl) GetAllProducts() ([]model.Product, error) {
 	var products []model.Product
-	err := r.Db.Preload("ProductImages").Find(&products).Error
+	err := r.Db.Find(&products).Error
 	return products, err
 }
 
 func (r ProductRepositoryImpl) GetProductById(productId uint) (*model.Product, error) {
 	var product model.Product
-	if err := r.Db.First(&product, productId).Error; err != nil {
+	if err := r.Db.Preload("ProductImages", func(db *gorm.DB) *gorm.DB {
+		return db.Order("img_id ASC")
+	}).
+		First(&product, productId).Error; err != nil {
 		return nil, err
 	}
 	return &product, nil
@@ -51,7 +54,10 @@ func (r ProductRepositoryImpl) DeleteProduct(productID uint) error {
 
 func (r ProductRepositoryImpl) GetProductBySlug(productSlug string) (*model.Product, error) {
 	var product model.Product
-	if err := r.Db.Preload("ProductImages").Where("product_slug= ?", productSlug).First(&product).Error; err != nil {
+	if err := r.Db.Preload("ProductImages", func(db *gorm.DB) *gorm.DB {
+		return db.Order("image_id ASC")
+	}).
+		Where("product_slug= ?", productSlug).First(&product).Error; err != nil {
 		return nil, err
 	}
 	return &product, nil
