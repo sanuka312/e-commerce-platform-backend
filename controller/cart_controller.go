@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"net/http"
 	"shophub-backend/data"
 	"shophub-backend/logger"
 	"shophub-backend/service"
-	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,11 +76,23 @@ func (c *CartController) AddItemToCart(ctx *gin.Context) {
 	}
 
 	if err := c.CartService.AddTOCart(req.UserID, req.CartID, req.ProductID, req.Quantity); err != nil {
-		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
-			Error:            "Internal Server Error",
-			ErrorDescription: "Failed add item to the user cart",
-			Details:          err.Error(),
-		})
+		if strings.Contains(err.Error(), "insufficient stock") {
+			ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+				Error:            "Bad Request",
+				ErrorDescription: err.Error(),
+			})
+		} else if strings.Contains(err.Error(), "product not found") {
+			ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+				Error:            "Not Found",
+				ErrorDescription: err.Error(),
+			})
+		} else {
+			ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
+				Error:            "Internal Server Error",
+				ErrorDescription: "Failed add item to the user cart",
+				Details:          err.Error(),
+			})
+		}
 		return
 	}
 	logger.ActInfo("Item added to the cart successfully")
@@ -120,5 +133,42 @@ func (c *CartController) ClearCart(ctx *gin.Context) {
 	logger.ActInfo("User cart cleared successfully")
 	ctx.JSON(http.StatusOK, data.MessageResponse{
 		Message: "User cart cleared",
+	})
+}
+
+func (c *CartController) RemoveItemFromCart(ctx *gin.Context) {
+	logger.ActInfo("Removing item from user cart")
+
+	itemIdParam := ctx.Param("itemId")
+	if itemIdParam == "" {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Status bad request",
+			ErrorDescription: "Missing itemId path parameter",
+		})
+		return
+	}
+
+	itemId, err := strconv.ParseUint(itemIdParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Status bad request",
+			ErrorDescription: "Invalid itemId",
+			Details:          err.Error(),
+		})
+		return
+	}
+
+	if err := c.CartService.RemoveItemFromCart(uint(itemId)); err != nil {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Failed to remove the item from the cart",
+			Details:          err.Error(),
+		})
+		return
+	}
+
+	logger.ActInfo("Item removed from cart successfully")
+	ctx.JSON(http.StatusOK, data.MessageResponse{
+		Message: "Item removed from cart successfully",
 	})
 }
