@@ -10,6 +10,7 @@ type CartControllerInterface interface {
 	GetUserCart(ctx *gin.Context)
 	AddItemToCart(ctx *gin.Context)
 	ClearCart(ctx *gin.Context)
+	RemoveItemFromCart(ctx *gin.Context)
 }
 
 func RegisterCartRoutes(router *gin.Engine, controller CartControllerInterface) {
@@ -19,5 +20,6 @@ func RegisterCartRoutes(router *gin.Engine, controller CartControllerInterface) 
 		cartGroup.GET("/:userId", controller.GetUserCart)
 		cartGroup.POST("/item", controller.AddItemToCart)
 		cartGroup.DELETE("/:userId/items", controller.ClearCart)
+		cartGroup.DELETE("/item/:itemId", controller.RemoveItemFromCart)
 	}
 }
