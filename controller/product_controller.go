@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"net/http"
 	"shophub-backend/data"
 	"shophub-backend/logger"
 	"shophub-backend/service"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -38,19 +38,19 @@ func (c *ProductController) GetAllProducts(ctx *gin.Context) {
 
 func (c *ProductController) GetProductById(ctx *gin.Context) {
 	logger.ActInfo("Fetching product by ID")
-    idParam := ctx.Param("id")
-    // Trim whitespace/newlines to avoid ParseUint errors from stray characters
-    trimmed := strings.TrimSpace(idParam)
-    if trimmed == "" {
-        ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-            Error:            "Bad Request",
-            ErrorDescription: "Invalid product ID ",
-            Details:          "id is empty",
-        })
-        return
-    }
+	idParam := ctx.Param("id")
+	// Trim whitespace/newlines to avoid ParseUint errors from stray characters
+	trimmed := strings.TrimSpace(idParam)
+	if trimmed == "" {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Invalid product ID ",
+			Details:          "id is empty",
+		})
+		return
+	}
 
-    id, err := strconv.ParseUint(trimmed, 10, 64)
+	id, err := strconv.ParseUint(trimmed, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
 			Error:            "Bad Request",
@@ -70,4 +70,29 @@ func (c *ProductController) GetProductById(ctx *gin.Context) {
 	}
 	logger.ActInfo("Product fetched succcessfully")
 	ctx.JSON(http.StatusOK, product)
+}
+
+func (c *ProductController) GetProductBySlug(ctx *gin.Context) {
+	logger.ActInfo("Fetching products by slug")
+	slugParam := ctx.Param("productSlug")
+
+	if slugParam == "" {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad request",
+			ErrorDescription: "Failed to fetch products",
+		})
+		return
+	}
+
+	products, err := c.ProductService.GetProductBySlug(slugParam)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
+			Error:            "Internal server error",
+			ErrorDescription: "Failed to fetch the products",
+			Details:          err.Error(),
+		})
+		return
+	}
+	logger.ActInfo("Products fetched successfully")
+	ctx.JSON(http.StatusOK, products)
 }
