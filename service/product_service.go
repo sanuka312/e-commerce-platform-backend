@@ -8,6 +8,7 @@ import (
 type ProductService interface {
 	GetAllProducts() ([]model.Product, error)
 	GetProductById(productId uint) (*model.Product, error)
+	GetProductBySlug(productSlug string) (*model.Product, error)
 }
 
 type ProductServiceImpl struct {
