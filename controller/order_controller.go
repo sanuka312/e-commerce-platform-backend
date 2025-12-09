@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"net/http"
+	"shophub-backend/auth"
 	"shophub-backend/data"
 	"shophub-backend/logger"
 	"shophub-backend/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,29 +22,21 @@ func NewOrderController(OrderService service.OrderService) *OrderController {
 
 func (c *OrderController) CreateOrder(ctx *gin.Context) {
 	logger.ActInfo("Creating order")
-	//Getting user id as a parameter
-	userIdParam := ctx.Param("user_id")
-	//handling the error if the user id is not provided
-	if userIdParam == "" {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Bad Request",
-			ErrorDescription: "Missing UserID parameter",
+	
+	// Extract Keycloak user ID from token claims
+	claims := auth.GetClaims(ctx)
+	if claims == nil || claims.Sub == "" {
+		ctx.JSON(http.StatusUnauthorized, data.ErrorResponse{
+			Error:            "unauthorized",
+			ErrorDescription: "User not authenticated or missing user ID in token",
 		})
 		return
 	}
-	//converting the user id parameter to uint
-	userId, err := strconv.ParseUint(userIdParam, 10, 64)
-	//if the conversion fails, return a bad request error
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Bad Request",
-			ErrorDescription: "Invalid UserId parameter",
-			Details:          err.Error(),
-		})
-		return
-	}
+
+	keycloakUserID := claims.Sub
+	
 	//calling the create order service
-	order, err := c.OrderService.CreateOrder(uint(userId))
+	order, err := c.OrderService.CreateOrder(keycloakUserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
 			Error:            "Internal Server Error",
@@ -60,31 +52,21 @@ func (c *OrderController) CreateOrder(ctx *gin.Context) {
 
 func (c *OrderController) GetOrderByUser(ctx *gin.Context) {
 	logger.ActInfo("Fetching orders by user")
-	//getting user id as parameter
-	userIdParam := ctx.Param("user_id")
-	//handling the error if the userId parameter is missing
-	if userIdParam == "" {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Bad Request",
-			ErrorDescription: "Missing UserID parameter",
+	
+	// Extract Keycloak user ID from token claims
+	claims := auth.GetClaims(ctx)
+	if claims == nil || claims.Sub == "" {
+		ctx.JSON(http.StatusUnauthorized, data.ErrorResponse{
+			Error:            "unauthorized",
+			ErrorDescription: "User not authenticated or missing user ID in token",
 		})
 		return
 	}
 
-	//converting userId param to uint
-	userId, err := strconv.ParseUint(userIdParam, 10, 64)
-	//handling th error if the conversion fails
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Bad Request",
-			ErrorDescription: "Invalid UserId parameter",
-			Details:          err.Error(),
-		})
-		return
-	}
+	keycloakUserID := claims.Sub
 
 	//calling the order service
-	orders, err := c.OrderService.GetOrderByUser(uint(userId))
+	orders, err := c.OrderService.GetOrderByUser(keycloakUserID)
 	//handling the error if order service fails
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
