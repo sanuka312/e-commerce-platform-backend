@@ -36,7 +36,7 @@ func LoadEnv() {
 	}
 
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Printf("Warning: Could not load .env file: %v. Using default values or environment variables.", err)
 	}
 }
 
