@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"shophub-backend/auth"
 	"shophub-backend/data"
 	"shophub-backend/logger"
 	"shophub-backend/service"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type CartController struct {
@@ -23,26 +25,19 @@ func NewCartController(CartService service.CartService) *CartController {
 
 func (c *CartController) GetUserCart(ctx *gin.Context) {
 	logger.ActInfo("Fetching User Cart")
-	userIdParam := ctx.Param("userId")
-	if userIdParam == "" {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "bad_request",
-			ErrorDescription: "Missing userId path oarameter",
+
+	// Extract Keycloak user ID from token claims
+	claims := auth.GetClaims(ctx)
+	if claims == nil || claims.Sub == "" {
+		ctx.JSON(http.StatusUnauthorized, data.ErrorResponse{
+			Error:            "unauthorized",
+			ErrorDescription: "User not authenticated or missing user ID in token",
 		})
 		return
 	}
 
-	userId, err := strconv.ParseUint(userIdParam, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "bad_request",
-			ErrorDescription: "Invalid user ID",
-			Details:          err.Error(),
-		})
-		return
-	}
-
-	cart, err := c.CartService.GetUserCart(uint(userId))
+	keycloakUserID := claims.Sub
+	cart, err := c.CartService.GetUserCart(keycloakUserID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
 			Error:            "Internal Server Error",
@@ -57,25 +52,39 @@ func (c *CartController) GetUserCart(ctx *gin.Context) {
 
 func (c *CartController) AddItemToCart(ctx *gin.Context) {
 	logger.ActInfo("Adding Items to the cart")
+
+	// Extract Keycloak user ID from token claims
+	claims := auth.GetClaims(ctx)
+	if claims == nil || claims.Sub == "" {
+		ctx.JSON(http.StatusUnauthorized, data.ErrorResponse{
+			Error:            "unauthorized",
+			ErrorDescription: "User not authenticated or missing user ID in token",
+		})
+		return
+	}
+
+	keycloakUserID := claims.Sub
+
 	var req data.AddToCartRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logger.ActError("Failed to bind request body", zap.Error(err))
 		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
 			Error:            "Bad Request",
-			ErrorDescription: "Invalid request body",
+			ErrorDescription: "Invalid request body. Expected: {product_id: number, quantity: number}",
 			Details:          err.Error(),
 		})
 		return
 	}
 
-	if req.UserID == 0 || req.CartID == 0 || req.ProductID == 0 || req.Quantity <= 0 {
+	if req.ProductID == 0 || req.Quantity <= 0 {
 		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
 			Error:            "Bad Request",
-			ErrorDescription: "user_id, cart_id, product_id must be > 0 and quantity must be >= 1",
+			ErrorDescription: "product_id must be > 0 and quantity must be >= 1",
 		})
 		return
 	}
 
-	if err := c.CartService.AddTOCart(req.UserID, req.CartID, req.ProductID, req.Quantity); err != nil {
+	if err := c.CartService.AddTOCart(keycloakUserID, req.ProductID, req.Quantity); err != nil {
 		if strings.Contains(err.Error(), "insufficient stock") {
 			ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
 				Error:            "Bad Request",
@@ -103,26 +112,20 @@ func (c *CartController) AddItemToCart(ctx *gin.Context) {
 
 func (c *CartController) ClearCart(ctx *gin.Context) {
 	logger.ActInfo("Clearing the user cart")
-	idParam := ctx.Param("userId")
-	if idParam == "" {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Status bad request",
-			ErrorDescription: "Missing userId path parameter",
+
+	// Extract Keycloak user ID from token claims
+	claims := auth.GetClaims(ctx)
+	if claims == nil || claims.Sub == "" {
+		ctx.JSON(http.StatusUnauthorized, data.ErrorResponse{
+			Error:            "unauthorized",
+			ErrorDescription: "User not authenticated or missing user ID in token",
 		})
 		return
 	}
 
-	userId, err := strconv.ParseUint(idParam, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
-			Error:            "Status bad request",
-			ErrorDescription: "Invalid userId",
-			Details:          err.Error(),
-		})
-		return
-	}
+	keycloakUserID := claims.Sub
 
-	if err := c.CartService.ClearCart(uint(userId)); err != nil {
+	if err := c.CartService.ClearCart(keycloakUserID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
 			Error:            "Internal Server Error",
 			ErrorDescription: "Failed to clear user cart",
@@ -170,5 +173,58 @@ func (c *CartController) RemoveItemFromCart(ctx *gin.Context) {
 	logger.ActInfo("Item removed from cart successfully")
 	ctx.JSON(http.StatusOK, data.MessageResponse{
 		Message: "Item removed from cart successfully",
+	})
+}
+
+func (c *CartController) UpdateCartItemQuantity(ctx *gin.Context) {
+	logger.ActInfo("Updating cart item quantity")
+	itemIdParam := ctx.Param("itemId")
+	if itemIdParam == "" {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Missing itemId path parameter",
+		})
+		return
+	}
+
+	itemId, err := strconv.ParseUint(itemIdParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Invalid itemId",
+			Details:          err.Error(),
+		})
+		return
+	}
+
+	var req data.UpdateCartItemQuantityRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Invalid request body",
+			Details:          err.Error(),
+		})
+		return
+	}
+
+	if req.Quantity <= 0 {
+		ctx.JSON(http.StatusBadRequest, data.ErrorResponse{
+			Error:            "Bad Request",
+			ErrorDescription: "Quantity must be greater than zero",
+		})
+		return
+	}
+
+	if err := c.CartService.UpdateCartItemQuantity(uint(itemId), req.Quantity); err != nil {
+		ctx.JSON(http.StatusInternalServerError, data.ErrorResponse{
+			Error:            "Internal Server Error",
+			ErrorDescription: "Failed to update cart item quantity",
+			Details:          err.Error(),
+		})
+		return
+	}
+	logger.ActInfo("Cart item quantity updated successfully")
+	ctx.JSON(http.StatusOK, data.MessageResponse{
+		Message: "Cart item quantity updated successfully",
 	})
 }
