@@ -56,6 +56,8 @@ func main() {
 	productRepository := repository.NewProductRepository(pgDb)
 	orderRepository := repository.NewOrderRepository(pgDb)
 	paymentRepository := repository.NewPaymentRepositoryImpl(pgDb)
+	addressRepository := repository.NewAddressRepository(pgDb)
+	userRepository := repository.NewUserRepository(pgDb)
 
 	cartService, err := service.NewCartServiceImpl(cartRepository, productRepository)
 	if err != nil {
@@ -81,28 +83,41 @@ func main() {
 		return
 	}
 
+	addressService, err := service.NewAddressServiceImpl(addressRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the address service", zap.Error(err))
+		return
+	}
+
+	checkoutService, err := service.NewCheckoutServiceImpl(orderRepository, productRepository, cartRepository, paymentRepository, addressRepository, userRepository)
+	if err != nil {
+		logger.ActError("Failed to initialize the checkout service", zap.Error(err))
+		return
+	}
+
 	//Initializing the controllers
 	cartController := controller.NewCartController(cartService)
 	productController := controller.NewProductController(productService)
 	orderController := controller.NewOrderController(orderService)
 	paymentController := controller.NewPaymentController(paymentService)
+	addressController := controller.NewAddressController(addressService)
+	checkoutController := controller.NewCheckoutController(checkoutService)
 
 	//Create gin router
 	r := gin.Default()
-
-	// Serve static files (images) from assets directory
-	r.Static("/assets", "./assets")
 
 	//Register routes
 	router.RegisterCartRoutes(r, cartController)
 	router.RegisterProductRoutes(r, productController)
 	router.RegisterOrderRoutes(r, orderController)
 	router.RegisterPaymentRoutes(r, paymentController)
+	router.RegisterAddressRoutes(r, addressController)
+	router.RegisterCheckoutRoutes(r, checkoutController)
 
 	// Enable CORS for all origins
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization", "X-User-ID"},
 		AllowCredentials: true,
 	}).Handler(r)
