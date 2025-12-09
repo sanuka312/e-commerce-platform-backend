@@ -1,14 +1,14 @@
 package database
 
 import (
-	"shophub-backend/config"
-	"shophub-backend/logger"
 	"fmt"
 	"log"
+	"shophub-backend/config"
+	"shophub-backend/logger"
 
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"go.uber.org/zap"
 )
 
 var openDB = func(dsn string) (*gorm.DB, error) {
@@ -39,8 +39,15 @@ func InitDB() *gorm.DB {
 	db, err := openDB(sqlInfo)
 
 	if err != nil {
-		logger.AppError("Error connecting to the database", zap.Error(err))
-		log.Fatal("Failed to connect to database. Please check your database configuration and ensure PostgreSQL is running.")
+		logger.AppError("Error connecting to the database",
+			zap.Error(err),
+			zap.String("host", host),
+			zap.Int("port", port),
+			zap.String("user", user),
+			zap.String("database", dbName),
+		)
+		log.Fatalf("Failed to connect to database.\nError: %v\nConnection details: host=%s port=%d user=%s dbname=%s\n\nPlease check:\n1. PostgreSQL is running\n2. Database '%s' exists\n3. User '%s' has access to the database\n4. Your .env file has correct DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME values",
+			err, host, port, user, dbName, dbName, user)
 	}
 
 	logger.AppInfo("Connected to PostgreSQL database successfully")
