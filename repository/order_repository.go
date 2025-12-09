@@ -9,7 +9,7 @@ import (
 type OrderRepository interface {
 	CreateOrder(order *model.Order) error
 	GetOrderById(orderId uint) (*model.Order, error)
-	GetOrderByUserId(UserId uint) ([]model.Order, error)
+	GetOrderByKeycloakUserID(keycloakUserID string) ([]model.Order, error)
 	UpdateOrderStatus(orderId uint, OrderStatus string) error
 }
 
@@ -25,12 +25,12 @@ func (r OrderRepositoryImpl) CreateOrder(order *model.Order) error {
 	return r.Db.Create(order).Error
 }
 
-func (r OrderRepositoryImpl) GetOrderByUserId(UserId uint) ([]model.Order, error) {
+func (r OrderRepositoryImpl) GetOrderByKeycloakUserID(keycloakUserID string) ([]model.Order, error) {
 	var orders []model.Order
 	err := r.Db.
 		Preload("Product").
 		Preload("Payment").
-		Where("user_id=?", UserId).
+		Where("keycloak_user_id=?", keycloakUserID).
 		Find(&orders).Error
 	return orders, err
 }
