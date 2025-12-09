@@ -7,10 +7,15 @@ type ErrorResponse struct {
 }
 
 type AddToCartRequest struct {
-	UserID    uint `json:"user_id"`
-	CartID    uint `json:"cart_id"`
-	ProductID uint `json:"product_id"`
-	Quantity  int  `json:"quantity"`
+	ProductID uint `json:"product_id" binding:"required"`
+	Quantity  int  `json:"quantity" binding:"required,min=1"`
+	// Legacy fields - ignored but kept for backward compatibility
+	UserID uint `json:"user_id,omitempty" binding:"-"`
+	CartID uint `json:"cart_id,omitempty" binding:"-"`
+}
+
+type UpdateCartItemQuantityRequest struct {
+	Quantity int `json:"quantity"`
 }
 
 type MessageResponse struct {
@@ -60,4 +65,19 @@ type IntrospectResponse struct {
 // Payment Request Struct
 type ProcessPaymentRequest struct {
 	PaymentMethod string `json:"payment_method"`
+}
+
+// Address Request Struct
+type CreateAddressRequest struct {
+	Line1      string `json:"line1" binding:"required,min=1,max=200"`
+	Line2      string `json:"line2" binding:"required,min=1,max=200"`
+	City       string `json:"city" binding:"required"`
+	PostalCode string `json:"postal_code" binding:"required,min=1,max=100"`
+	Country    string `json:"country" binding:"required,min=1,max=100"`
+}
+
+// Place Order Request Struct
+type PlaceOrderRequest struct {
+	PaymentMethod string               `json:"payment_method"`
+	Address       CreateAddressRequest `json:"address"`
 }
