@@ -20,7 +20,7 @@ func RegisterOrderRoutes(router *gin.Engine, controller OrderControllerInterface
 		orderGroup.POST("/", controller.CreateOrder)
 
 		//Get all order for a user
-		orderGroup.GET("/", controller.GetOrderByUser)
+		orderGroup.GET("/user", controller.GetOrderByUser)
 	}
 
 }
