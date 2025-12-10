@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"shophub-backend/logger"
 	"shophub-backend/model"
 	"shophub-backend/repository"
@@ -43,7 +44,13 @@ func (s *PaymentServiceImpl) ProcessPayment(orderId uint, paymentMethod string) 
 	payment.Status = "PAID"
 	payment.PaymentMethod = "paymentMethod"
 
-	if err := s.PaymentRepository.UpdatePaymentStatus(payment.OrderId, "PAID"); err != nil {
+	// Check if OrderId is set before updating payment status
+	if payment.OrderId == nil {
+		logger.ActError("Payment OrderId is nil, cannot update status")
+		return nil, errors.New("payment order ID is not set")
+	}
+
+	if err := s.PaymentRepository.UpdatePaymentStatus(*payment.OrderId, "PAID"); err != nil {
 		return nil, err
 	}
 
