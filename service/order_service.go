@@ -1,16 +1,16 @@
 package service
 
 import (
+	"errors"
 	"shophub-backend/logger"
 	"shophub-backend/model"
 	"shophub-backend/repository"
-	"errors"
 	"time"
 )
 
 type OrderService interface {
-	CreateOrder(userId uint) (*model.Order, error)
-	GetOrderByUser(userId uint) ([]model.Order, error)
+	CreateOrder(keycloakUserID string) (*model.Order, error)
+	GetOrderByUser(keycloakUserID string) ([]model.Order, error)
 }
 
 type OrderServiceImpl struct {
@@ -29,8 +29,8 @@ func NewOrderServiceImpl(OrderRepository repository.OrderRepository, ProductRepo
 	}, err
 }
 
-func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
-	cart, err := s.CartRepository.GetUserCart(userId)
+func (s *OrderServiceImpl) CreateOrder(keycloakUserID string) (*model.Order, error) {
+	cart, err := s.CartRepository.GetUserCart(keycloakUserID)
 	if err != nil || cart == nil {
 		logger.ActError("Cart not found")
 		return nil, errors.New("cart not found")
@@ -64,13 +64,13 @@ func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
 		// Calculate price for this item
 		itemTotalPrice := float64(item.Quantity) * product.ProductPrice
 
-		// Create payment with temporary OrderId (will be updated after order creation)
+		// Create payment without OrderId (will be updated after order creation)
 		payment := &model.Payment{
-			OrderId:       0,
-			UserId:        userId,
-			PaymentMethod: "CASH",
-			PaymentAmount: itemTotalPrice,
-			Status:        "UNPAID",
+			OrderId:        nil, // Set to nil initially, will be updated after order creation
+			KeycloakUserID: keycloakUserID,
+			PaymentMethod:  "CASH",
+			PaymentAmount:  itemTotalPrice,
+			Status:         "UNPAID",
 		}
 
 		//Creating the payment for the order
@@ -81,14 +81,14 @@ func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
 
 		// Create order with all required fields
 		order := &model.Order{
-			UserId:       userId,
-			ProductId:    item.ProductID,
-			PaymentId:    payment.PaymentId,
-			ProductPrice: product.ProductPrice,
-			Quantity:     uint(item.Quantity),
-			TotalPrice:   itemTotalPrice,
-			OrderStatus:  "Pending",
-			CreatedAt:    time.Now(),
+			KeycloakUserID: keycloakUserID,
+			ProductId:      item.ProductID,
+			PaymentId:      payment.PaymentId,
+			ProductPrice:   product.ProductPrice,
+			Quantity:       uint(item.Quantity),
+			TotalPrice:     itemTotalPrice,
+			OrderStatus:    "Pending",
+			CreatedAt:      time.Now(),
 		}
 
 		if err := s.OrderRepository.CreateOrder(order); err != nil {
@@ -116,7 +116,7 @@ func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
 	}
 
 	// Clear cart after all orders are created
-	if err := s.CartRepository.ClearCart(userId); err != nil {
+	if err := s.CartRepository.ClearCart(keycloakUserID); err != nil {
 		logger.ActError("Unable to clear cart after order creation")
 		return nil, err
 	}
@@ -124,6 +124,6 @@ func (s *OrderServiceImpl) CreateOrder(userId uint) (*model.Order, error) {
 	return userOrder, nil
 }
 
-func (s *OrderServiceImpl) GetOrderByUser(userId uint) ([]model.Order, error) {
-	return s.OrderRepository.GetOrderByUserId(userId)
+func (s *OrderServiceImpl) GetOrderByUser(keycloakUserID string) ([]model.Order, error) {
+	return s.OrderRepository.GetOrderByKeycloakUserID(keycloakUserID)
 }
