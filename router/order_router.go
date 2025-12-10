@@ -17,10 +17,10 @@ func RegisterOrderRoutes(router *gin.Engine, controller OrderControllerInterface
 	orderGroup := router.Group("/orders", authMiddleware)
 	{
 		//Creates a new order for a user
-		orderGroup.POST("/:user_id", controller.CreateOrder)
+		orderGroup.POST("/", controller.CreateOrder)
 
 		//Get all order for a user
-		orderGroup.GET("/user/:user_id", controller.GetOrderByUser)
+		orderGroup.GET("/", controller.GetOrderByUser)
 	}
 
 }
