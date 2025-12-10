@@ -7,27 +7,22 @@ import (
 )
 
 type UserRepository interface {
-	GetUserById(userId uint) (*model.User, error)
-	CreateUser(user *model.User) error
+	GetOrCreateUser(keycloakUserID string) (*model.User, error)
 }
 
 type UserRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
-	return &UserRepositoryImpl{Db: db}
+func NewUserRepository(Db *gorm.DB) UserRepository {
+	return &UserRepositoryImpl{Db: Db}
 }
 
-func (r *UserRepositoryImpl) GetUserById(userId uint) (*model.User, error) {
-	var user model.User
-	if err := r.Db.First(&user, userId).Error; err != nil {
-		return nil, err
+func (r *UserRepositoryImpl) GetOrCreateUser(keycloakUserID string) (*model.User, error) {
+	user := &model.User{
+		KeycloakUserID: keycloakUserID,
 	}
-
-	return &user, nil
-}
-
-func (r *UserRepositoryImpl) CreateUser(user *model.User) error {
-	return r.Db.Create(user).Error
+	// Use FirstOrCreate to ensure user exists without overwriting existing data
+	err := r.Db.FirstOrCreate(user, model.User{KeycloakUserID: keycloakUserID}).Error
+	return user, err
 }
