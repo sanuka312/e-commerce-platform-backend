@@ -30,15 +30,17 @@ func (r ProductRepositoryImpl) CreateProduct(product *model.Product) error {
 func (r ProductRepositoryImpl) GetAllProducts() ([]model.Product, error) {
 	var products []model.Product
 	err := r.Db.Find(&products).Error
-	return products, err
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
 }
 
 func (r ProductRepositoryImpl) GetProductById(productId uint) (*model.Product, error) {
 	var product model.Product
 	if err := r.Db.Preload("ProductImages", func(db *gorm.DB) *gorm.DB {
-		return db.Order("img_id ASC")
-	}).
-		First(&product, productId).Error; err != nil {
+		return db.Order("image_id ASC")
+	}).First(&product, productId).Error; err != nil {
 		return nil, err
 	}
 	return &product, nil
